@@ -4,10 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
+document.body.style = 'background-color: rgb(231 143 39 / 0.28 )'
 root.render(
   <React.StrictMode>
-    <App />
+   <App></App>
   </React.StrictMode>
 );
 
