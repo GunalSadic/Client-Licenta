@@ -13,11 +13,7 @@ function LoginPage() {
         justifyContent="center"
         style={{ minHeight: '100vh' }}
     >
-        
-       
          <LoginForm />
-       
-         
       </Grid> 
     );
   }
