@@ -24,7 +24,7 @@ function NavigationBar() {
             <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login">Login</Button>
             <Button variant="inherit" color="inherit" href="Register">Sign Up</Button>
         </Box>
-       
+        <Button color="inherit" sx={{ mr: 2 }} href = "/AvatarCreator">Avatar</Button>
       </Toolbar>
     </AppBar>
   );
