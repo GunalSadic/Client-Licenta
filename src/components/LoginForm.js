@@ -1,18 +1,29 @@
 import { useState } from "react";
-import {Box, TextField,Button, Typography} from '@mui/material';
+import {Box, TextField,Button, Typography,Link} from '@mui/material';
 import ClickableTypography from "./ClickableTypography";
-
+import axios from 'axios';
+import FormErrors from './FormErrors';
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
-    const handleSubmit = (event) => {
+    const [errors,setErrors] = useState([]);
+    const handleSubmit = async (event) => {
       event.preventDefault();
-      console.log('Email:', email);
-      console.log('Password:', password);
+      try{
+        const response = await axios.post(`https://localhost:7244/api/accounts/login`,{
+          email: email,
+          password: password
+        })
+        setErrors(  "Login Successful")
+      }
+      catch (error){
+        setErrors(error.response.data)
+      }
     };
-  
-    return (<Box p={2} width={1} maxWidth={600} sx={{border: '1px solid black', borderRadius: '15px', background: 'white'}}>
+    
+    return (
+    <Box p={2} width={1} maxWidth={600} sx={{border: '1px solid black', borderRadius: '15px', background: 'white'}}>
+      <FormErrors errors={errors}></FormErrors>
       <form onSubmit={handleSubmit}>
       <Box mb={2}>
           <Typography>Login</Typography>
@@ -25,13 +36,17 @@ function LoginForm() {
         </Box>
         <Box mb={1} justifyContent={'space-between'} display={'flex'}>
             <ClickableTypography variant="p3" color="blue">Forgotten password</ClickableTypography>
-            <ClickableTypography variant="p3" color="blue" >Create an account</ClickableTypography>
+            <ClickableTypography variant="p3" color="blue" >
+              <Link href='/Register'>
+              Create an account
+              </Link>
+            </ClickableTypography>
         </Box>
         <Button variant="contained" color="primary" type="submit">
         Submit
       </Button>
       </form>
-      </Box>
+    </Box>
     );
   }
   
