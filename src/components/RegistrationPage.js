@@ -3,7 +3,7 @@ import RegistrationForm from './RegistrationForm';
 import { Box } from '@mui/system';
 import { Grid } from '@mui/material';
 import NavigationBar from './NavigationBar';
-function RegistrationPage() {
+function RegistrationPage(setClaims) {
     return (
       <Box>
         <Grid
@@ -14,7 +14,6 @@ function RegistrationPage() {
         justifyContent="center"
         style={{ minHeight: '100vh'}}
     >
-     
          <RegistrationForm />
       </Grid> </Box>
     );
