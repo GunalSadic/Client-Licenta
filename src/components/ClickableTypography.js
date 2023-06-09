@@ -9,7 +9,7 @@ const ClickableTypography = styled(Typography)({
   },
 });
 
-const ClickableText = ({ text, onClick }) => {
+const ClickableText = ({ text, onClick, link}) => {
   return (
     <ClickableTypography variant="body1" onClick={onClick}>
       {text}

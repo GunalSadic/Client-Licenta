@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Box } from '@mui/system';
-
+import Authorized from '../authentication/Authorized';
+import { logout } from '../authentication/HandleJWT';
 function NavigationBar() {
     const toolbarStyle = {
         display: 'flex' ,
@@ -21,8 +22,11 @@ function NavigationBar() {
             <Button color="inherit" sx={{ mr: 2 }} href ="/Leaderboards">Leaderboards</Button>
         </Box>
         <Box marginLeft={'auto'}> 
-            <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login">Login</Button>
-            <Button variant="inherit" color="inherit" href="Register">Sign Up</Button>
+           <Authorized
+           authorized={<><Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login" onClick={logout()}>Logout</Button></>}
+           notAuthorized={<> <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login">Login</Button>
+           <Button variant="inherit" color="inherit" href="Register">Sign Up</Button></>}
+           ></Authorized>
         </Box>
         <Button color="inherit" sx={{ mr: 2 }} href = "/AvatarCreator">Avatar</Button>
       </Toolbar>
