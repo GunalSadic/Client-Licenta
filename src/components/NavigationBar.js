@@ -11,11 +11,10 @@ function NavigationBar() {
         flexDirection:'row',
         backgroundColor: '#E78F27'
       };
-    const {claims} = useContext(AuthenticationContext);
     
     function getUserEmail(){
       try{
-        return getClaims().filter(x => x.name === 'email')[0].value;
+        return getClaims().filter(x => x.name === 'username')[0].value;
       }
       catch{
         console.log("Navigation Bar error, claims was probably empty")
@@ -31,7 +30,8 @@ function NavigationBar() {
           Eloker
       </Typography>
         <Box ml={1}>  
-            <Button color="inherit" sx={{ mr: 2 }} href = "/Table">Find Game</Button>
+            <Authorized authorized ={ <Button color="inherit" sx={{ mr: 2 }} href = "/Table">Find Game</Button>} notAuthorized ={<></>}>
+            </Authorized>
             <Button color="inherit" sx={{ mr: 2 }} href ="/Leaderboards">Leaderboards</Button>
         </Box>
         <Box marginLeft={'auto'}> 

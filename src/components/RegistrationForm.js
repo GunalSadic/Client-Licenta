@@ -49,10 +49,16 @@ const RegistrationForm = (props) => {
     resolver: yupResolver(validationSchema)
   });
   const onSubmit = async (data) => {
-    var response = await axios.post('https://localhost:7244/api/accounts/create',{email: data.email, password: data.password})
-    saveToken(response.data);
-    setClaims(getClaims());
-    navigate('/');
+    try{
+      var response = await axios.post('https://localhost:7244/api/accounts/create',{
+        email: data.email, password: data.password, username: data.username})
+      saveToken(response.data);
+      setClaims(getClaims());
+      navigate('/');
+    }
+    catch(e){
+      console.log(e)
+    }
   };
 
   

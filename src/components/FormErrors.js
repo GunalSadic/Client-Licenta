@@ -10,6 +10,8 @@ function FormErrors(errors){
             errors = errors.Email
         else if( Array.isArray(errors.Password))
             errors = errors.Password
+        else if( Array.isArray(errors.errors))
+            errors = errors.errors
         if(typeof(errors === 'string'))
             errors = [errors]
         if(errors.length > 1 || errors[0] != '') 
