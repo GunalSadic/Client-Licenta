@@ -76,7 +76,8 @@ const handleMove = (move) => {
           })
         }
       />
-  
+      <Avatar modelSrc={user1AvatarData}/>
+      <Avatar modelSrc={user2AvatarData}/>
     </div>  
   );
 }
