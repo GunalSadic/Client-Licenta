@@ -5,8 +5,7 @@ function CardList() {
     { name: "Gunal", Elo: "2300" },
     { name: "Isildur", Elo: "2500" },
     { name: "TurboRandom", Elo: "900" },
-    { name: "John Doe", Elo:"1100"},
-    {name: "Cristi", Elo:"500"}
+    { name: "John Doe", Elo:"1100"}
   ];
 
   // Sort leaderboard by Elo
