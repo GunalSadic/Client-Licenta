@@ -4,6 +4,7 @@ import { ChessInstance, ShortMove } from "chess.js";
 import { Chess } from "chess.js";
 import { Avatar } from '@readyplayerme/visage';
 import { useEffect } from "react";
+import { Chessground } from "chessground";
 // We are using FEN notation r - rook n - knight ...
 const paddingStyle = {
     padding: 5
@@ -62,20 +63,7 @@ const handleMove = (move) => {
   return (
     <div className="flex-center">
       <h1>Random Chess Game</h1>
-      <Chessboard
-        width={400}
-        position={fen}
-        // onDrop prop tracks everytime a piece is moved.
-        // The rest is handled in the the handleMove function.
-        onDrop={(move) =>
-          handleMove({
-            from: move.sourceSquare,
-            to: move.targetSquare,
-            // This promotion attribute changes pawns to a queen if they reach the other side of the board.
-            promotion: "q",
-          })
-        }
-      />
+      <Chessboard></Chessboard>
       <Avatar modelSrc={user1AvatarData}/>
       <Avatar modelSrc={user2AvatarData}/>
     </div>  
