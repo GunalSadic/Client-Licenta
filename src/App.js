@@ -24,7 +24,7 @@ function App() {
         <Route path="/Login" element = {<LoginPage/>}></Route>
         <Route path ="/Register" element = {<RegistrationPage />}></Route>
         <Route path="/Leaderboards" element = {<LeaderboardPage/>}></Route>
-        <Route path="/Table" element = {<Demo/>}></Route>
+        <Route path="/Table" element = {<MatchmakingLobby/>}></Route>
         <Route path="/AvatarCreator" element = {<AvatarCreator/>}></Route>
         <Route path="/Test" element = {<Demo/>}></Route>
       </Route>

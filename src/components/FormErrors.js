@@ -1,20 +1,7 @@
 function FormErrors(errors){
     
     try{
-        errors = errors.errors;
-        if(Array.isArray(errors.Email) && Array.isArray(errors.Password))
-        {
-            errors =errors.Email.concat(errors.Password)
-        }
-        else if(Array.isArray(errors.Email))
-            errors = errors.Email
-        else if( Array.isArray(errors.Password))
-            errors = errors.Password
-        else if( Array.isArray(errors.errors))
-            errors = errors.errors
-        if(typeof(errors === 'string'))
-            errors = [errors]
-        if(errors.length > 1 || errors[0] != '') 
+        errors = errors.errors
         return(
             <div>
                 <ul>
@@ -26,6 +13,7 @@ function FormErrors(errors){
         )
         }
     catch(exception){     
+        console.log(exception)
         }
 }
 

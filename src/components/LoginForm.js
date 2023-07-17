@@ -10,12 +10,13 @@ function LoginForm(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errors,setErrors] = useState([]);
+    const [info,setInfo] = useState('')
     const navigate = useNavigate();
     const {setClaims} = useContext(AuthenticationContext); 
     const handleSubmit = async (event) => {
       event.preventDefault();
       try{
-        const response = await axios.post(`https://localhost:7244/api/accounts/login`,{
+        const response = await axios.post(`https://localhost:7230/api/accounts/login`,{
           username: username,
           password: password
         }) 
@@ -24,13 +25,13 @@ function LoginForm(props) {
         navigate('/');
       }
       catch (error){
-        setErrors(error.response.data)
+        setInfo(error.response.data)
       }
     };
     
     return (
     <Box p={2} width={1} maxWidth={600} sx={{border: '1px solid black', borderRadius: '15px', background: 'white'}}>
-      <FormErrors errors={errors}></FormErrors>
+      <p>{info}</p>
       <form onSubmit={handleSubmit}>
       <Box mb={2}>
           <Typography>Login</Typography>

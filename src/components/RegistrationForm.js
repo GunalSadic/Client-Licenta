@@ -19,9 +19,11 @@ import {
   Link
 } from '@mui/material';
 import AuthenticationContext from "../authentication/AuthenticationContext";
-    
+import FormErrors from "./FormErrors";
+  
 
 const RegistrationForm = (props) => {
+  const [backendErrors,setBackendErrors] = useState([]);
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required('Username is required')
@@ -33,10 +35,14 @@ const RegistrationForm = (props) => {
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
-      .max(40, 'Password must not exceed 40 characters'),
+      .max(40, 'Password must not exceed 40 characters')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/[0-9]/, 'Password must contain at least one number')
+      .matches(/.*[!@#$%^&*]/, 'Password must contain at least one special character'),
     confirmPassword: Yup.string()
-      .required('Confirm Password is required')
-      .oneOf([Yup.ref('password'), null], 'Confirm Password does not match')
+    .required('Confirm Password is required')
+    .oneOf([Yup.ref('password'), null], 'Confirm Password does not match')
   });
   const {setClaims} = useContext(AuthenticationContext); 
   const navigate = useNavigate();
@@ -50,20 +56,21 @@ const RegistrationForm = (props) => {
   });
   const onSubmit = async (data) => {
     try{
-      var response = await axios.post('https://localhost:7244/api/accounts/create',{
+      var response = await axios.post('https://localhost:7230/api/accounts/create',{
         email: data.email, password: data.password, username: data.username})
       saveToken(response.data);
       setClaims(getClaims());
       navigate('/');
     }
     catch(e){
-      console.log(e)
+      setBackendErrors(e.response.data)
     }
   };
 
   
   return (
       <Box p={2} width={1} maxWidth={600} sx={{border: '1px solid black', borderRadius: '15px', background: 'white'}}>
+        <FormErrors errors={backendErrors}></FormErrors>
         <Typography>Register</Typography>
               <TextField
                 required
@@ -96,7 +103,6 @@ const RegistrationForm = (props) => {
                 id="password"
                 name="password"
                 label="Password"
-                type="password"
                 fullWidth
                 margin="dense"
                 {...register('password')}
@@ -110,7 +116,6 @@ const RegistrationForm = (props) => {
                 id="confirmPassword"
                 name="confirmPassword"
                 label="Confirm Password"
-                type="password"
                 fullWidth
                 margin="dense"
                 {...register('confirmPassword')}

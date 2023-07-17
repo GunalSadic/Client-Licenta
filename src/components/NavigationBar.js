@@ -23,11 +23,8 @@ function NavigationBar() {
   return (
     <AppBar position="static">
       <Toolbar style={toolbarStyle} >
-      <a href="\">
-      
-      </a>
       <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }} ml={1}>
-          Eloker
+          AvatarChess
       </Typography>
         <Box ml={1}>  
             <Authorized authorized ={ <Button color="inherit" sx={{ mr: 2 }} href = "/Table">Find Game</Button>} notAuthorized ={<></>}>
@@ -38,12 +35,13 @@ function NavigationBar() {
            <Authorized
            authorized={<>
            <Typography variant="inherit" color="inherit" sx={{ mr: 2 }}>Hello {getUserEmail()}</Typography>
-           <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login" onClick={logout}>Logout</Button></>}
+           <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login" onClick={logout}>Logout</Button>
+           <Button color="inherit" sx={{ mr: 2 }} href = "/AvatarCreator">Avatar</Button>
+           </>}
            notAuthorized={<> <Button variant="inherit" color="inherit" sx={{ mr: 2 }} href="\Login">Login</Button>
            <Button variant="inherit" color="inherit" href="Register">Sign Up</Button></>}
            ></Authorized>
         </Box>
-        <Button color="inherit" sx={{ mr: 2 }} href = "/AvatarCreator">Avatar</Button>
       </Toolbar>
     </AppBar>
   );

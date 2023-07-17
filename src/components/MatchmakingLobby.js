@@ -12,8 +12,9 @@ import "../styles/chessground.base.css"
 import "../styles/chessground.brown.css"
 import "../styles/chessground.cburnett.css"
 import { Chessground as ChessgroundApi } from 'chessground';
+import { HttpTransportType } from '@microsoft/signalr';
+import axios from 'axios';
 function MatchmakingLobby(){
-    ChessgroundApi
     const [connection,setConnection] = useState();  
     const [queuePlayerCount, setQueuePlayerCount] = useState();
     const userEmail = getClaims().filter(x => x.name === 'email')[0].value;
@@ -24,18 +25,37 @@ function MatchmakingLobby(){
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [user1AvatarData, setUser1AvatarData] = useState(null);
     const [user2AvatarData, setUser2AvatarData] = useState(null);
+    const [user1AvatarUrl, setUser1AvatarUrl] = useState(null);
+    const [user2AvatarUrl, setUser2AvatarUrl] = useState(null);
+    const [forcedUpdatesCount, setForcedUpdatesCount] = useState(0);
     const chessgroundRef = useRef(null);
     useEffect(() => {
-      // Fetch avatar data for the first user
-      fetch('https://models.readyplayer.me/6470fcc1d71bf8b85c3b006d.glb')
+        if (opponentEmail) {
+            var encodedUserEmail = encodeURIComponent(userEmail);
+            var encodedOpponentEmail = encodeURIComponent(opponentEmail);
+          axios.get(`https://localhost:7230/api/players/${encodedUserEmail}/${encodedOpponentEmail}`)
+            .then((response) => {
+              const { userUrl, opponentUrl } = response.data;
+              setUser1AvatarUrl(userUrl);
+              setUser2AvatarUrl(opponentUrl);
+            })
+            .catch((error) => {
+              // Handle any errors that occur during the request
+              console.error(error);
+            });
+        }
+      }, [opponentEmail]);
+
+    useEffect(() => {
+    if(user1AvatarUrl && user2AvatarUrl){
+      fetch(user1AvatarUrl)
         .then(response => response.blob())
         .then(data => setUser1AvatarData(data));
   
-      // Fetch avatar data for the second user
-      fetch('https://models.readyplayer.me/6470fcc1d71bf8b85c3b006d.glb')
+      fetch(user2AvatarUrl)
         .then(response => response.blob())
-        .then(data => setUser2AvatarData(data));
-    }, []);
+        .then(data => setUser2AvatarData(data));}
+    }, [user1AvatarUrl,user2AvatarUrl]);
     const MatchFound = (response) =>{
         let data = JSON.parse(response);
         console.log(data);
@@ -55,10 +75,11 @@ function MatchmakingLobby(){
             
             const token = localStorage.getItem('token')
             const connection = new HubConnectionBuilder().
-            withUrl("https://localhost:7244/GameHub",{
-                accessTokenFactory: ()=> {return `Bearer ${token}`},  
+            withUrl("https://localhost:7230/GameHub",{
+                accessTokenFactory: ()=> {return `${token}`},  
+                skipNegotiation: true,
+                transport: HttpTransportType.WebSockets
               }).
-
             configureLogging(LogLevel.Information).build(); 
             connection.on("QueuePlayerCountUpdate",(playerCount)=>{console.log(playerCount)});
             connection.on("MatchFound",(response) => MatchFound(response));
@@ -74,30 +95,49 @@ function MatchmakingLobby(){
     }
     const handleMove = (origin,dest,sendOver = true) => {
         try{
+            if(!(chess.turn() === color[0]) && sendOver == true)
+                throw new Error('Not your turn!')
             var move;
             move = origin+dest;
-            if(chess.turn() === color[0] || sendOver == false){
-                chess.move(move);
-                setFen(chess.fen());
-                if(sendOver === true)
+            var moveChecker = new Chess(chess.fen());
+            moveChecker.move(move);
+            chess.move(move);
+            var gameResult;
+            setFen(chess.fen());
+            if(chess.isCheckmate())
+                if(chess.turn() !== color[0])
                 {
-                    let moveJSON = JSON.stringify({
-                        origin : origin,
-                        dest : dest,
-                        userEmail: userEmail,
-                        opponentEmail: opponentEmail
-                    })
-                    connection.invoke("MakeMove", moveJSON);
+                    gameResult = 1;
+                    console.log(`${userEmail} has won the game`)
                 }
+            if(chess.isDraw()){
+                gameResult = 0;
             }
+            // post game results and update opponentEmail to null
+            if(sendOver === true)
+            {
+                let moveJSON = JSON.stringify({
+                    origin : origin,
+                    dest : dest,
+                    userEmail: userEmail,
+                    opponentEmail: opponentEmail
+                })
+                connection.invoke("MakeMove", moveJSON);
+            }
+            
         }
        catch(error){
+        setForcedUpdatesCount(forcedUpdatesCount+1);
         console.log(error)
-        
        }
      
     }
+    
+    useEffect(() => {
+        setFen(chess.fen());
+    }, [fen]);
     if(opponentEmail){
+        
         return(
                 <Grid
                 container
@@ -115,8 +155,7 @@ function MatchmakingLobby(){
                 width={400}
                 height={400}
                 config={
-                    {addPieceZIndex: true, orientation: color, events: {move: handleMove}, 
-                    movable:{dests: toDests(chess), free: false, color: color}}
+                    {addPieceZIndex: true, orientation: color, events: {move: handleMove }, fen: fen}
                 }
             />
                 <Typography variant='h6'>{userEmail}</Typography>
@@ -125,6 +164,7 @@ function MatchmakingLobby(){
         )
     }
   
+
 
     return(
         <>
